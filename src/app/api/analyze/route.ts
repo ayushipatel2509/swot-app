@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
   try {
     const { product, objective, segment, promptType, customPrompt } = await req.json()
 
-    const apiKey = process.env.OPENAI_API_KEY
+    const apiKey = process.env.GROQ_API_KEY
     if (!apiKey) return NextResponse.json({ error: 'API key not configured.' }, { status: 500 })
 
     let prompt: string
@@ -124,14 +124,14 @@ export async function POST(req: NextRequest) {
         .replace(/{objective}/g, objective)
     }
 
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'llama-3.3-70b-versatile',
         messages: [
           { role: 'system', content: SYSTEM },
           { role: 'user', content: prompt },
